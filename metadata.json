@@ -1,0 +1,6 @@
+{
+  "name": "Curriculum Management System",
+  "description": "A web application for managing academic curriculum, including teachers, students, subjects, academic calendar, weekly plans, and timetables.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

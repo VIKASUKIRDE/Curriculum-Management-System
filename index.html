@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Curriculum Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+      body {
+        font-family: 'Inter var', sans-serif; /* Updated to Inter var */
+        color: var(--cms-text-default);
+        /* Animated Gradient Background */
+        background: linear-gradient(290deg, var(--cms-bg-main-gradient-start), var(--cms-bg-main-gradient-end));
+        background-size: 400% 400%;
+        animation: animatedGradientBackground 25s ease infinite;
+        overflow-x: hidden; /* Prevent horizontal scroll from subtle movements */
+      }
+
+      /* Vivid Sky & Bloom Theme Variables (with additions for gradient and neumorphism) */
+      :root {
+        --cms-primary: #007BFF; 
+        --cms-primary-dark: #0056b3;
+        --cms-primary-rgb: 0, 123, 255;
+        --cms-primary-glow: rgba(var(--cms-primary-rgb), 0.45);
+
+
+        --cms-secondary: #60A5FA; 
+        --cms-secondary-dark: #3B82F6; 
+        --cms-secondary-rgb: 96, 165, 250; 
+        --cms-secondary-glow: rgba(var(--cms-secondary-rgb), 0.4);
+        
+        --cms-accent: #F59E0B; 
+        --cms-accent-dark: #D97706; 
+        --cms-accent-rgb: 245, 158, 11; 
+        --cms-accent-glow: rgba(var(--cms-accent-rgb), 0.35);
+
+        --cms-green-rgb: 34, 197, 94; /* Tailwind green-500 */
+        --cms-green-glow: rgba(var(--cms-green-rgb), 0.4);
+        
+        /* Backgrounds */
+        --cms-bg-main: #F0F4F8; /* Slightly bluer light gray for neumorphism base */
+        --cms-bg-main-gradient-start: #E0F2FE; /* Tailwind sky-100 */
+        --cms-bg-main-gradient-end: #F0F4F8;   /* Light bluish gray */
+        --cms-bg-card: #F0F4F8; /* Neumorphic cards often share base bg or are slightly off */
+        --cms-bg-header: #FFFFFF; /* White header for contrast */
+        --cms-bg-input: #E9EFF5; /* Input background for neumorphic style */
+        --cms-progress-bg: #D1D9E6; /* Neutral for progress track */
+        
+        /* Text */
+        --cms-text-default: #374151; /* Tailwind gray-700, slightly darker for better contrast on light bg */
+        --cms-text-light: #FFFFFF;
+        --cms-text-on-primary: #FFFFFF;
+        --cms-text-on-secondary: var(--cms-text-default); /* Text on light blue secondary */
+        --cms-text-on-accent: #1F2937;
+        --cms-text-darker: #1F2937; /* Tailwind gray-800 */
+        --cms-text-headings: #111827; /* Tailwind gray-900 */
+        --cms-text-subtle: #6B7280; /* Tailwind gray-500 */
+
+        /* Neumorphic Shadows (Subtle) - For Light Backgrounds */
+        --neumorphic-shadow-light-color: rgba(255, 255, 255, 0.7);
+        --neumorphic-shadow-dark-color: rgba(170, 190, 210, 0.5); /* Adjusted for bluish bg */
+        --neumorphic-shadow-outset: 5px 5px 10px var(--neumorphic-shadow-dark-color), -5px -5px 10px var(--neumorphic-shadow-light-color);
+        --neumorphic-shadow-inset: inset 4px 4px 8px var(--neumorphic-shadow-dark-color), inset -4px -4px 8px var(--neumorphic-shadow-light-color);
+        --neumorphic-shadow-outset-hover: 7px 7px 14px var(--neumorphic-shadow-dark-color), -7px -7px 14px var(--neumorphic-shadow-light-color);
+
+        /* Dark Sidebar Theme Variables (inspired by login page) */
+        --cms-sidebar-bg: #1e3a8a; /* Tailwind blue-900 (#1e3a8a) - Made Opaque */
+        --cms-sidebar-text-color: var(--cms-text-light); /* White */
+        --cms-sidebar-hover-bg: rgba(255, 255, 255, 0.08); /* Subtle white overlay, similar to login form inputs */
+        --cms-sidebar-active-bg: var(--cms-bg-header); /* White background for active item, like login active tab */
+        --cms-sidebar-active-text: var(--cms-primary); /* Blue text on active white background */
+        
+        /* Neumorphic Shadows - For Dark Backgrounds (like sidebar items) */
+        --neumorphic-shadow-darkbg-highlight: rgba(75, 85, 99, 0.5); /* Lighter gray for "lit" edge on dark bg (e.g., gray-600 opacity) */
+        --neumorphic-shadow-darkbg-shadow: rgba(0, 0, 0, 0.3);       /* Blacker for "shadowed" edge on dark bg */
+        --neumorphic-shadow-outset-darkbg: 3px 3px 7px var(--neumorphic-shadow-darkbg-shadow), -3px -3px 7px var(--neumorphic-shadow-darkbg-highlight);
+      }
+
+      /* Keyframes for animations */
+      @keyframes animatedGradientBackground {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      
+      /* Neumorphic Card Style - For Light Backgrounds */
+      .neumorphic-card {
+        background-color: var(--cms-bg-card);
+        border-radius: 12px; /* Slightly softer radius */
+        box-shadow: var(--neumorphic-shadow-outset);
+        transition: box-shadow 0.3s ease-in-out, transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+        position: relative; /* For pseudo-element glow */
+        z-index: 1; /* Ensure card is above its glow */
+      }
+      .neumorphic-card::after {
+        content: '';
+        position: absolute;
+        left: 5%; /* Indent glow slightly */
+        right: 5%;
+        bottom: -8px; /* Position glow slightly below */
+        height: 20px;
+        background: var(--card-glow-color, transparent); /* Default to transparent, set by helper class */
+        filter: blur(18px);
+        opacity: 0;
+        transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
+        z-index: -1; /* Behind the card */
+        border-radius: 10px; /* Can be different from card for softer glow */
+        transform: scaleY(0.8) translateY(5px); /* Start slightly compressed */
+      }
+
+      .neumorphic-card:hover {
+        transform: scale(0.96) translateY(-2px); /* Zoom out and slight lift */
+      }
+      .neumorphic-card:hover::after {
+        opacity: 0.7;
+        transform: scaleY(1) translateY(0); /* Expand glow */
+      }
+
+      /* Glow color helper classes */
+      .neumorphic-card.glow-primary::after { --card-glow-color: var(--cms-primary-glow); }
+      .neumorphic-card.glow-secondary::after { --card-glow-color: var(--cms-secondary-glow); }
+      .neumorphic-card.glow-accent::after { --card-glow-color: var(--cms-accent-glow); }
+      .neumorphic-card.glow-green::after { --card-glow-color: var(--cms-green-glow); }
+      
+      /* Progress bar fill animation */
+      .progress-bar-fill {
+        transition: width 0.8s cubic-bezier(0.25, 0.1, 0.25, 1); /* Smoother easing */
+      }
+
+      /* Sidebar icon glow on hover - Changed to blue glow */
+      .nav-link-hover:hover svg {
+        filter: drop-shadow(0 0 7px rgba(var(--cms-secondary-rgb), 0.6)); /* Using secondary blue for glow */
+        transform: scale(1.1); /* Slight bounce/scale */
+        transition: filter 0.3s ease, transform 0.3s ease;
+      }
+       .nav-link-hover.active svg { /* Keep glow for active item */
+        filter: drop-shadow(0 0 7px rgba(var(--cms-secondary-rgb), 0.6)); /* Using secondary blue for glow */
+      }
+      
+      /* Input Neumorphic Style (Example - apply to Input.tsx if desired) */
+      .neumorphic-input {
+        background-color: var(--cms-bg-input);
+        border-radius: 8px;
+        box-shadow: var(--neumorphic-shadow-inset);
+        border: none;
+        padding: 0.75rem 1rem;
+      }
+      .neumorphic-input:focus {
+        outline: none;
+        box-shadow: var(--neumorphic-shadow-inset), 0 0 0 2px rgba(var(--cms-primary-rgb), 0.3); /* Focus ring */
+      }
+
+      /* Applying New Theme Colors */
+      .bg-cms-primary { background-color: var(--cms-primary); } 
+      .text-cms-primary { color: var(--cms-primary); }
+      .border-cms-primary { border-color: var(--cms-primary); }
+      .hover\:bg-cms-primary-dark:hover { background-color: var(--cms-primary-dark); } 
+      .focus\:ring-cms-primary:focus { --tw-ring-color: var(--cms-primary); }
+      .focus\:border-cms-primary:focus { border-color: var(--cms-primary); }
+      
+      .bg-cms-secondary { background-color: var(--cms-secondary); }
+      .text-cms-secondary { color: var(--cms-secondary); }
+      .border-cms-secondary { border-color: var(--cms-secondary); }
+      .hover\:bg-cms-secondary-dark:hover { background-color: var(--cms-secondary-dark); } 
+
+      .bg-cms-accent { background-color: var(--cms-accent); }
+      .text-cms-accent { color: var(--cms-accent); }
+      .border-cms-accent { border-color: var(--cms-accent); }
+      .hover\:bg-cms-accent-dark:hover { background-color: var(--cms-accent-dark); } 
+      .focus\:ring-cms-accent:focus { --tw-ring-color: var(--cms-accent); }
+      
+      .bg-cms-bg-main { background-color: var(--cms-bg-main); }
+      .bg-cms-bg-card { background-color: var(--cms-bg-card); }
+      .bg-cms-bg-header { background-color: var(--cms-bg-header); }
+      .bg-cms-bg-input { background-color: var(--cms-bg-input); }
+      .bg-cms-progress-bg { background-color: var(--cms-progress-bg); }
+
+      /* New Sidebar Theme Colors */
+      .bg-cms-sidebar-bg { background-color: var(--cms-sidebar-bg); }
+      .text-cms-sidebar-text-color { color: var(--cms-sidebar-text-color); }
+      .hover\:bg-cms-sidebar-hover-bg:hover { background-color: var(--cms-sidebar-hover-bg); }
+      .bg-cms-sidebar-active-bg { background-color: var(--cms-sidebar-active-bg); }
+      .text-cms-sidebar-active-text { color: var(--cms-sidebar-active-text); }
+
+      
+      .text-cms-text-default { color: var(--cms-text-default); }
+      .text-cms-text-light { color: var(--cms-text-light); }
+      .text-cms-text-on-primary { color: var(--cms-text-on-primary); }
+      .text-cms-text-on-secondary { color: var(--cms-text-on-secondary); }
+      .text-cms-text-on-accent { color: var(--cms-text-on-accent); }
+      .text-cms-text-darker { color: var(--cms-text-darker); }
+      .text-cms-text-headings { color: var(--cms-text-headings); }
+      .text-cms-text-subtle { color: var(--cms-text-subtle); }
+
+      /* Event specific colors - Kept distinct for status indication */
+      .bg-holiday-red { background-color: #E74C3C; } 
+      .border-holiday-red { border-color: #E74C3C; }
+      .text-holiday-red { color: #E74C3C; }
+
+      .bg-event-blue { background-color: #3498DB; } 
+      .border-event-blue { border-color: #3498DB; }
+      .text-event-blue { color: #3498DB; }
+
+      .bg-exam-yellow { background-color: #F1C40F; }
+      .border-exam-yellow { border-color: #F1C40F; }
+      .text-exam-yellow { color: #F1C40F; }
+
+      /* Override tailwind gray for text for new theme */
+      .text-gray-900 { color: var(--cms-text-headings); } 
+      .text-gray-800 { color: var(--cms-text-darker); } /* Mapped to darker for new theme */
+      .text-gray-700 { color: var(--cms-text-default); } /* Mapped to default for new theme */
+      .text-gray-600 { color: var(--cms-text-subtle); } 
+      .text-gray-500 { color: var(--cms-text-subtle); }
+      .text-gray-400 { color: #9CA3AF; } 
+
+    </style>
+    <link rel="preconnect" href="https://rsms.me/">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter var', 'sans-serif'],
+            },
+            colors: {
+              'cms-primary': 'var(--cms-primary)',        
+              'cms-primary-dark': 'var(--cms-primary-dark)',  
+              'cms-secondary': 'var(--cms-secondary)',    
+              'cms-secondary-dark': 'var(--cms-secondary-dark)',
+              'cms-accent': 'var(--cms-accent)',         
+              'cms-accent-dark': 'var(--cms-accent-dark)',    
+              
+              'cms-bg-main': 'var(--cms-bg-main)',      
+              'cms-bg-card': 'var(--cms-bg-card)',      
+              'cms-bg-header': 'var(--cms-bg-header)',   
+              'cms-bg-input': 'var(--cms-bg-input)',    
+              'cms-progress-bg': 'var(--cms-progress-bg)', 
+              
+              'cms-text-default': 'var(--cms-text-default)', 
+              'cms-text-light': 'var(--cms-text-light)',    
+              'cms-text-on-primary': 'var(--cms-text-on-primary)',
+              'cms-text-on-secondary': 'var(--cms-text-on-secondary)',
+              'cms-text-on-accent': 'var(--cms-text-on-accent)',
+              'cms-text-darker': 'var(--cms-text-darker)',   
+              'cms-text-headings': 'var(--cms-text-headings)', 
+              'cms-text-subtle': 'var(--cms-text-subtle)',   
+
+              'holiday-red': '#E74C3C',            
+              'event-blue': '#3498DB',            
+              'exam-yellow': '#F1C40F',  
+
+              /* New Sidebar Colors */
+              'cms-sidebar-bg': 'var(--cms-sidebar-bg)',
+              'cms-sidebar-text-color': 'var(--cms-sidebar-text-color)',
+              'cms-sidebar-hover-bg': 'var(--cms-sidebar-hover-bg)',
+              'cms-sidebar-active-bg': 'var(--cms-sidebar-active-bg)',
+              'cms-sidebar-active-text': 'var(--cms-sidebar-active-text)',
+            },
+            boxShadow: {
+              'neumorphic-outset': 'var(--neumorphic-shadow-outset)',
+              'neumorphic-inset': 'var(--neumorphic-shadow-inset)',
+              'neumorphic-outset-hover': 'var(--neumorphic-shadow-outset-hover)',
+              'neumorphic-outset-darkbg': 'var(--neumorphic-shadow-outset-darkbg)', /* New */
+              
+              'cms-card': '0 4px 12px rgba(0, 0, 0, 0.07)', 
+              'cms-card-lg': '0 8px 16px rgba(0, 0, 0, 0.09)', 
+              'glow-primary': '0 0 20px rgba(var(--cms-primary-rgb), 0.4)',
+              'glow-secondary': '0 0 20px rgba(var(--cms-secondary-rgb), 0.4)',
+              'glow-accent': '0 0 20px rgba(var(--cms-accent-rgb), 0.3)',
+            },
+            animation: {
+              // Removed fadeIn, slideInUp as Framer Motion will handle these
+              'gradientBg': 'animatedGradientBackground 25s ease infinite',
+            },
+            keyframes: {
+              animatedGradientBackground: {
+                '0%': { backgroundPosition: '0% 50%' },
+                '50%': { backgroundPosition: '100% 50%' },
+                '100%': { backgroundPosition: '0% 50%' },
+              },
+              // Removed fadeIn, slideInUp keyframes
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "framer-motion": "https://esm.sh/framer-motion@^12.18.1",
+    "@google/genai": "https://esm.sh/@google/genai@^1.5.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-cms-bg-main text-cms-text-default">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
